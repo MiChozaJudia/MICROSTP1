@@ -1,0 +1,10 @@
+reader.c:38:6:init_reader	32	static
+reader.c:56:6:get_ID	32	static
+reader.c:88:6:set_enable	4	static
+reader.c:97:6:clean_enable	4	static
+reader.c:107:6:get_data	8	static
+reader.c:141:6:toggle_enable	8	static
+reader.c:149:6:set_parity	24	static
+reader.c:166:6:check_lrc	16	static
+reader.c:179:6:reset_reading	4	static
+reader.c:187:6:clear_parity	16	static

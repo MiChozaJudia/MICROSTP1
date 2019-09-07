@@ -1,0 +1,10 @@
+core_cm4.h:1677:22:__NVIC_EnableIRQ	16	static
+gpio.c:16:6:gpioMode	24	static
+gpio.c:83:6:gpioWrite	24	static
+gpio.c:95:6:gpioToggle	24	static
+gpio.c:107:6:gpioRead	24	static
+gpio.c:121:6:gpioIRQ	24	static
+gpio.c:158:9:PORTA_IRQHandler	16	static
+gpio.c:162:9:PORTB_IRQHandler	16	static
+gpio.c:166:9:PORTC_IRQHandler	16	static
+gpio.c:171:6:portIRQ_handler	24	static
