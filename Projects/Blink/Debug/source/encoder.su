@@ -1,0 +1,5 @@
+encoder.c:30:6:initEncoder	24	static
+encoder.c:47:6:encoderFSM	8	static
+encoder.c:121:15:readEvent	16	static
+encoder.c:137:8:detectEdge	32	static
+encoder.c:152:15:getFSM_ev	4	static

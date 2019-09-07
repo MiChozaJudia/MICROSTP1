@@ -1,0 +1,5 @@
+door.c:16:6:initDoor	16	static
+door.c:25:6:openDoor	16	static
+door.c:32:6:openDoor5sec	8	static
+door.c:37:6:closeDoor	8	static
+door.c:43:6:isDoorOpen	4	static

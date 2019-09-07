@@ -1,0 +1,15 @@
+display.c:81:6:inicializarDisplay	16	static
+display.c:128:6:initLeds	8	static
+display.c:135:6:setBrightness	16	static
+display.c:140:6:ResetDisplay	4	static
+display.c:148:13:escribir	8	static
+display.c:174:13:writeBlancSpace	8	static
+display.c:190:13:tryRoll	16	static
+display.c:210:6:setRollData	24	static
+display.c:227:6:escribirDisplay	24	static
+display.c:237:13:writeOnSelectors	8	static
+display.c:242:13:writeOnDisplay	8	static
+display.c:252:6:escribirLeds	16	static
+display.c:258:13:place2Selection	16	static
+display.c:276:13:val2Leds	16	static
+display.c:298:13:val2Segments	16	static

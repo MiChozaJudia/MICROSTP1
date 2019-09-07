@@ -1,56 +1,49 @@
 /***************************************************************************//**
-  @file     App.c
-  @brief    Application functions
+  @file     SysTick.h
+  @brief    SysTick driver
   @author   Nicolás Magliola
  ******************************************************************************/
+
+#ifndef _SYSTICK_H_
+#define _SYSTICK_H_
 
 /*******************************************************************************
  * INCLUDE HEADER FILES
  ******************************************************************************/
 
-#include "board.h"
-#include "gpio.h"
-#include "reader.h"
+#include <stdbool.h>
+
 
 /*******************************************************************************
  * CONSTANT AND MACRO DEFINITIONS USING #DEFINE
  ******************************************************************************/
 
-
-/*******************************************************************************
- * FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
- ******************************************************************************/
-
-
+#define SYSTICK_ISR_FREQUENCY_HZ 1000U
 
 
 /*******************************************************************************
- *******************************************************************************
-                        GLOBAL FUNCTION DEFINITIONS
- *******************************************************************************
+ * ENUMERATIONS AND STRUCTURES AND TYPEDEFS
  ******************************************************************************/
-
-/* Función que se llama 1 vez, al comienzo del programa */
-void App_Init (void)
-{
-
-}
-
-/* Función que se llama constantemente en un ciclo infinito */
-void App_Run (void)
-{
-
-
-}
+typedef void (*SysTickFun_t)(void);
 
 
 /*******************************************************************************
- *******************************************************************************
-                        LOCAL FUNCTION DEFINITIONS
- *******************************************************************************
+ * VARIABLE PROTOTYPES WITH GLOBAL SCOPE
  ******************************************************************************/
 
+/*******************************************************************************
+ * FUNCTION PROTOTYPES WITH GLOBAL SCOPE
+ ******************************************************************************/
+
+/**
+ * @brief Initialize SysTic driver
+ * @param funcallback Function to be call every SysTick
+ * @return Initialization and registration succeed
+ */
+bool SysTick_Init (SysTickFun_t SysFunction);
 
 
 /*******************************************************************************
  ******************************************************************************/
+
+#endif // _SYSTICK_H_

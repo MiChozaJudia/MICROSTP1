@@ -1,2 +1,2 @@
 App.c:34:6:App_Init	4	static
-App.c:40:6:App_Run	24	static
+App.c:40:6:App_Run	4	static

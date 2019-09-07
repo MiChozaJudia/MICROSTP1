@@ -1,0 +1,10 @@
+timer.c:75:6:timerInit	8	static
+timer.c:87:10:timerGetId	4	static
+timer.c:104:6:timerStart	24	static
+timer.c:127:6:timerFinish	16	static
+timer.c:135:6:timerToggle	16	static
+timer.c:143:6:timerExpired	16	static
+timer.c:156:10:timersActive	16	static
+timer.c:165:6:isSpecificTimerActive	16	static
+timer.c:170:6:timerDelay	16	static
+timer.c:186:13:timer_isr	16	static
