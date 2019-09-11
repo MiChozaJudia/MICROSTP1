@@ -31,7 +31,6 @@ enum { PA, PB, PC, PD, PE };
 #define PIN2PORT(p)         (((p)>>5) & 0x07)
 #define PIN2NUM(p)          ((p) & 0x1F)
 
-
 // Modes
 #ifndef INPUT
 #define INPUT               0
@@ -40,13 +39,11 @@ enum { PA, PB, PC, PD, PE };
 #define INPUT_PULLDOWN      3
 #endif // INPUT
 
-
 // Digital values
 #ifndef LOW
 #define LOW     0
 #define HIGH    1
 #endif // LOW
-
 
 // IRQ modes
 enum {
@@ -57,7 +54,6 @@ enum {
 
     GPIO_IRQ_CANT_MODES=13
 };
-
 
 /*******************************************************************************
  * ENUMERATIONS AND STRUCTURES AND TYPEDEFS

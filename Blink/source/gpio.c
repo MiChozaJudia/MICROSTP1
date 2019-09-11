@@ -136,6 +136,7 @@ bool gpioIRQ (pin_t pin, uint8_t irqMode, pinIrqFun_t irqFun)
 	else if(port==PB)
 	{
 		__NVIC_EnableIRQ(PORTB_IRQn);
+		//NVIC_SetPriority(PORTB_IRQn,1);
 	}
 	else if(port==PC)
 	{
@@ -149,8 +150,6 @@ bool gpioIRQ (pin_t pin, uint8_t irqMode, pinIrqFun_t irqFun)
 	{
 		__NVIC_EnableIRQ(PORTE_IRQn);
 	}
-
-
 	return 1; //FALTA HACER VERIFICACION
 
 }
@@ -168,6 +167,11 @@ __ISR__ PORTC_IRQHandler (void)
 	portIRQ_handler(PC);
 }
 
+__ISR__ PORTD_IRQHandler (void)
+{
+	portIRQ_handler(PD);
+}
+
 void portIRQ_handler(uint8_t port)
 {
 	uint8_t pin=0;
@@ -181,5 +185,3 @@ void portIRQ_handler(uint8_t port)
 
 
 }
-
-

@@ -5,18 +5,19 @@
  ******************************************************************************/
 
 #include "hardware.h"
+#include "App.h"
 
-void App_Init (void);
-void App_Run (void);
-
-
+#define STACK_SIZE 20
 int main (void)
 {
     hw_Init();
     hw_DisableInterrupts();
-    App_Init(); /* Program-specific setup */
+    user_data data;//Estructura de datos utilizada por la FSM
+    circ_bbuf_t buffer;//Buffer circular utilizado para implementar una cola de eventos
+    STATE *p2state=NULL;//Puntero utilizado para recorrer las tablas de estados de la FSM
+    App_Init(&data,&buffer,&p2state);//Inicializo el programa
     hw_EnableInterrupts();
 
     __FOREVER__
-        App_Run(); /* Program-specific loop  */
+        App_Run(&data,&buffer,&p2state);//Run loop del programa
 }
