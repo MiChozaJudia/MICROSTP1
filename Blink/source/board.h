@@ -49,13 +49,16 @@
 #define PIN_STAT0		PORTNUM2PIN(PB,2)
 #define PIN_STAT1		PORTNUM2PIN(PB,3)
 
-#define PIN_LEFT		PORTNUM2PIN(PC,17)
-#define PIN_RIGHT		PORTNUM2PIN(PC,16)
+#define PIN_LEFT		PORTNUM2PIN(PC,16)
+#define PIN_RIGHT		PORTNUM2PIN(PC,17)
 #define PIN_BUTTON		PORTNUM2PIN(PB,9)
 
-#define PIN_ENABLE		PORTNUM2PIN(PB,11)
-#define PIN_DATA		PORTNUM2PIN(PB,20)
-#define PIN_CLOCK		PORTNUM2PIN(PB,10)
+#define PIN_ENABLE		PORTNUM2PIN(PD,1)
+#define PIN_DATA		PORTNUM2PIN(PD,2)
+#define PIN_CLOCK		PORTNUM2PIN(PD,3)
+
+#define PIN_TEST  		PORTNUM2PIN(PE,26)
+#define PIN_SYS			PORTNUM2PIN(PE,24)
 
 /*******************************************************************************
  ******************************************************************************/

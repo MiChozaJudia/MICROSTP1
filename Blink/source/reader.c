@@ -6,7 +6,7 @@
 
 #define CLEAR_PARITY_MASK 0b01111
 //#define ID_LEN 8
-#define TRACK2_LEN 40
+#define TRACK2_LEN 400
 #define DATA_BIT_SIZE 5
 
 //PRIVATE FUNCTION
@@ -39,6 +39,10 @@ static char clear_parity(char data);
 bool init_reader()
 {
 
+	//TEST
+	gpioMode (PIN_TEST, OUTPUT);
+	gpioWrite(PIN_TEST,true);
+	//END TEST
 	myClockPin=PIN2NUM(PIN_CLOCK);
 	//myClockPin=clock_pin;
 	myEnablePin=PIN2NUM(PIN_ENABLE);
@@ -105,27 +109,14 @@ void get_data(void)
 	}
 	else if((bitCounter==DATA_BIT_SIZE)&&(dataCounter!=0))
 	{
-		if(bitData==ENDSENTINEL)
-		{
-			end=true;
-			__NVIC_DisableIRQ(SysTick_IRQn);
+		if(bitData==ENDSENTINEL)end=true;
 
-
-		}
-		if((bitData==0b10110) && dataCounter==39)
-		{
-		bitData=bitData;
-		}
 		TRACK2[dataCounter]=bitData;
 		bitData=0;
 		bitCounter=0;
 
-		if(!(dataCounter==40))dataCounter++;
-		if(dataCounter>TRACK2_LEN)
-		{
-			dataCounter--;
-		}
-		//dataCounter++;
+		if(!(dataCounter==TRACK2_LEN))dataCounter++;
+
 
 	}
 	}
@@ -205,10 +196,9 @@ bool get_ID(char* ID,uint8_t id_len)
 			uint8_t j=0;
 			while(j<id_len)
 			{
-				ID[j]=clear_parity(TRACK2[j+1]);
+				ID[j]=clear_parity(TRACK2[j+1])+'0';
 				j++;
 			}
-			__NVIC_EnableIRQ(SysTick_IRQn);
 			reset_reading();
 
 		}

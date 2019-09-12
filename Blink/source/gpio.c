@@ -1,6 +1,9 @@
 #include "gpio.h"
 #include "MK64F12.h"
 
+//TEST
+#include "board.h"
+
 static GPIO_Type *  gpios_ptr[]= GPIO_BASE_PTRS;
 static PORT_Type * ports_p[]=PORT_BASE_PTRS;
 static SIM_Type *  sim=SIM;
@@ -174,6 +177,7 @@ __ISR__ PORTD_IRQHandler (void)
 
 void portIRQ_handler(uint8_t port)
 {
+	gpioWrite (PIN_TEST, true);
 	uint8_t pin=0;
 
 	while(((ports_p[port]->PCR[pin])&PORT_PCR_ISF_MASK)!=PORT_PCR_ISF_MASK)pin++;
@@ -182,6 +186,8 @@ void portIRQ_handler(uint8_t port)
 
 	irq_pointers[port][pin]();
 	ports_p[port]->PCR[pin]|=PORT_PCR_ISF_MASK;
+
+	gpioWrite (PIN_TEST, false);
 
 
 }

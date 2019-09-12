@@ -20,7 +20,8 @@
  ******************************************************************************/
 
 #define MAXPINSFORENCODER 3
-#define TIMEISLONG	200
+#define TIMEISTOOLONG	400
+#define TIMEISLONG		100
 
 
 /*******************************************************************************
@@ -30,15 +31,15 @@ enum {LEFT, RIGHT, BUTTON};
 typedef enum {NONE, POSEDGE, NEGEDGE} edge_t;
 
 typedef enum {
-	IDLE,
-	ROTLEFT,
-	STARTROTLEFT,
 	ROTRIGHT,
+	IDLE,
+	STARTROTLEFT,
 	STARTROTRIGHT,
 	CLICK,
 	LONGCLICK,
+	VERYLONGCLICK,
+	ROTLEFT,
 	SIMPLECLICK,
-	PUSHANDROTATE
 } encoderStates;
 
 

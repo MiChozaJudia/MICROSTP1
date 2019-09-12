@@ -53,8 +53,9 @@ STATE boca_state[] =
 	{ENCODER_LEFT,setLuminosity_state,setLumin},
 	{ENCODER_RIGHT,waitCard_state,set_waitCard},
 	{CARD_PASS,boca_state,do_nothing},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,boca_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,boca_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -63,13 +64,14 @@ STATE boca_state[] =
 STATE setLuminosity_state[] =
 {
 	{BUTTON_PRESS,boca_state,cancel},
-	{LONG_BUTTON_PRESS,setLuminosity_state,do_nothing},
-	{LONGER_BUTTON_PRESS,setLuminosity_state,do_nothing},
+	{LONG_BUTTON_PRESS,boca_state,cancel},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
 	{ENCODER_LEFT,setLuminosity_state,decrease_luminosity},
 	{ENCODER_RIGHT,setLuminosity_state,increase_luminosity},
 	{CARD_PASS,setLuminosity_state,do_nothing},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,setLuminosity_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,setLuminosity_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -78,13 +80,14 @@ STATE setLuminosity_state[] =
 STATE waitCard_state[] =
 {
 	{BUTTON_PRESS,boca_state,cancel},
-	{LONG_BUTTON_PRESS,waitCard_state,do_nothing},
-	{LONGER_BUTTON_PRESS,waitCard_state,do_nothing},
+	{LONG_BUTTON_PRESS,boca_state,cancel},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
 	{ENCODER_LEFT,waitCard_state,do_nothing},
 	{ENCODER_RIGHT,waitCard_state,do_nothing},
 	{CARD_PASS,idValidation_state,check_ID},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,waitCard_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,waitCard_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -94,12 +97,13 @@ STATE waitID_state[] =
 {
 	{BUTTON_PRESS,waitID_state,increase_num},
 	{LONG_BUTTON_PRESS,idValidation_state,check_ID},
-	{LONGER_BUTTON_PRESS,idValidation_state,check_ID},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
 	{ENCODER_LEFT,waitID_state,switch_left},
 	{ENCODER_RIGHT,waitID_state,switch_right},
 	{CARD_PASS,waitID_state,do_nothing},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,waitID_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,waitID_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -113,8 +117,9 @@ STATE idValidation_state[] =
 	{ENCODER_LEFT,idValidation_state,do_nothing},
 	{ENCODER_RIGHT,idValidation_state,do_nothing},
 	{CARD_PASS,idValidation_state,do_nothing},
+	{DOOR_CLOSED,idValidation_state,do_nothing},
 	{VALID,displayID_state,displayID},
-	{NOT_VALID,boca_state,set_IDretry},
+	{NOT_VALID,waitID_state,set_IDretry},
 	{NO_EVENT,idValidation_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -127,8 +132,9 @@ STATE displayID_state[] =
 	{ENCODER_LEFT,displayID_state,do_nothing},
 	{ENCODER_RIGHT,displayID_state,do_nothing},
 	{CARD_PASS,displayID_state,do_nothing},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,displayID_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,displayID_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -142,8 +148,9 @@ STATE waitPIN_state[] =
 	{ENCODER_LEFT,waitPIN_state,switch_left},
 	{ENCODER_RIGHT,waitPIN_state,switch_right},
 	{CARD_PASS,waitPIN_state,do_nothing},
-	{VALID,boca_state,reset_FSM},
-	{NOT_VALID,boca_state,reset_FSM},
+	{DOOR_CLOSED,waitPIN_state,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
 	{NO_EVENT,waitPIN_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -157,8 +164,9 @@ STATE PINValidation_state[] =
 	{ENCODER_LEFT,PINValidation_state,do_nothing},
 	{ENCODER_RIGHT,PINValidation_state,do_nothing},
 	{CARD_PASS,PINValidation_state,do_nothing},
+	{DOOR_CLOSED,PINValidation_state,do_nothing},
 	{VALID,enter_state,open_door},
-	{NOT_VALID,boca_state,set_PINretry},
+	{NOT_VALID,waitPIN_state,set_PINretry},
 	{NO_EVENT,PINValidation_state,do_nothing},
 	{FIN_TABLA,boca_state,reset_FSM}
 };
@@ -172,10 +180,11 @@ STATE enter_state[] =
 	{ENCODER_LEFT,enter_state,do_nothing},
 	{ENCODER_RIGHT,enter_state,do_nothing},
 	{CARD_PASS,enter_state,do_nothing},
+	{DOOR_CLOSED,boca_state,cancel},
 	{VALID,enter_state,do_nothing},
 	{NOT_VALID,enter_state,do_nothing},
 	{NO_EVENT,enter_state,do_nothing},
-	{FIN_TABLA,enter_state,do_nothing}//CAMBIAR ESTO, ESTA COMO DEBUG AHORA
+	{FIN_TABLA,enter_state,reset_FSM}//CAMBIAR ESTO, ESTA COMO DEBUG AHORA
 };
 
 ///========interfaz=================
@@ -184,7 +193,7 @@ STATE *FSM_GetInitState(user_data* data)
 	init_reader();
 	initEncoder();
 	init_display();
-	//init_door();
+	initDoor();
 	displayMode_t mode=BOCA;
 	updateDisplay(mode,data->ID,0);//IMPRIMO BOCA
 	return (boca_state);
@@ -219,14 +228,15 @@ void decrease_luminosity(user_data* data)
 ///
 void set_waitCard(user_data* data)
 {
-	displayMode_t mode=CARD;
+	data->waitingCard = true;
+	displayMode_t mode = CARD;
 	updateDisplay(mode,data->ID,0);//IMPRIMO CARD
 }
 
 ///PREPARO PARA ESPERAR UN ID
 void set_waitID(user_data* data)
 {
-	displayMode_t mode=ID;
+	displayMode_t mode = ID;
 	updateDisplay(mode,data->ID,data->curr_number);
 }
 
@@ -284,12 +294,12 @@ void set_PINretry(user_data* data)
 	data->curr_tries++;
 	data->validData = false;
 	data->validation = false;
-	for (int i = 0; i < ID_LENGTH; i++)
+	for (int i = 0; i < PIN_LENGTH; i++)
 	{
-		data->ID[i] = '0';
+		data->PIN[i] = '0';
 	}
-	displayMode_t mode=BOCA;
-	updateDisplay(mode,data->ID,0);//IMPRIMO BOCA
+	displayMode_t mode=PIN;
+	updateDisplay(mode,data->PIN,data->curr_number);
 }
 
 ///
@@ -342,7 +352,7 @@ void switch_right(user_data* data)
 	}
 	else
 	{
-		if (data->curr_number < PIN_LENGTH)
+		if (data->curr_number < PIN_LENGTH-1)
 			data->curr_number++;
 		displayMode_t mode=PIN;
 		updateDisplay(mode,data->PIN,data->curr_number);
@@ -354,7 +364,8 @@ void open_door(user_data* data)
 {
 	data->validation=false;
 	displayMode_t mode=DOOR;
-	leds(2);
+	//leds(2);
+	 openDoor5sec();
 	updateDisplay(mode,data->ID,0);//
 
 	/*if (!isDoorOpen())
@@ -370,6 +381,7 @@ void cancel(user_data* data)
 	data->curr_number = 0;
 	data->validData = false;
 	data->validation = false;
+	data->waitingCard = false;
 	for (int i = 0; i < ID_LENGTH; i++)
 	{
 		data->ID[i] = '0';
@@ -393,6 +405,7 @@ void reset_FSM(user_data* data)
 {
 	data->isID = true;
 	data->validData = false;
+	data->waitingCard = false;
 	data->curr_tries = 0;
 	data->curr_number = 0;
 	for (int i = 0; i < ID_LENGTH; i++)

@@ -21,10 +21,10 @@ typedef struct DisplayControl {
 
 } DisplayControlSegment;
 
-typedef struct LedsControl{
+/*typedef struct LedsControl{
 	PinParameters led0;
 	PinParameters led1;
-} Leds;
+} Leds;*/
 
 typedef struct DisplaySelection{
 	PinParameters sel0;
@@ -43,7 +43,7 @@ static uint8_t dondepuntito =5;
 tipo_de_brillo_t BrightnessValue;
 DisplayControlSegment ControlSegment;
 DisplaySelection Selection;
-Leds ControlLed;
+//Leds ControlLed;
 //------------------------------------VARIABLES GLOBALES------------------------------------
 
 
@@ -72,7 +72,7 @@ static void writeOnDisplay();
 
 static void val2Segments(uint8_t val,uint8_t puntitoBool);
 
-static void val2Leds(unsigned int place);
+//static void val2Leds(unsigned int place);
 
 //--------------------------DECLARACIONES ESTO VA EN UN .H LO DEJO AHORA ACA PARA TESTEAR-----------------------
 
@@ -117,20 +117,20 @@ void inicializarDisplay(){
 	//inicializar Timer.
 	timerInit();
 	tim_id_t timerEscribir = timerGetId();
-	timerStart(timerEscribir,30,TIM_MODE_PERIODIC,&escribir);
+	timerStart(timerEscribir,1,TIM_MODE_PERIODIC,&escribir);
 	tim_id_t timerRoll = timerGetId();
-	timerStart(timerRoll,100000,TIM_MODE_PERIODIC,&tryRoll);
+	timerStart(timerRoll,3333,TIM_MODE_PERIODIC,&tryRoll);
 
-
+	gpioMode(PIN_SYS,OUTPUT);
 
 }
 
-void initLeds(){
+/*void initLeds(){
 	gpioMode(PIN_STAT0,OUTPUT);
 	ControlLed.led0.pin = PIN_STAT0;
 	gpioMode(PIN_STAT1,OUTPUT);
 	ControlLed.led1.pin = PIN_STAT1;
-}
+}*/
 
 void setBrightness(tipo_de_brillo_t value){
 	//toma valores entre 0 y 10
@@ -147,6 +147,7 @@ void ResetDisplay(){
 
 static void escribir(){
 //llamada por systick
+
 	if(Brightness<BrightnessValue){
 		if (MsjLine < 4){
 			place2Selection(MsjLine);
@@ -169,6 +170,7 @@ static void escribir(){
 	}else{
 		writeBlancSpace();
 	}
+
 }
 
 static void writeBlancSpace(){
@@ -249,11 +251,11 @@ static void writeOnDisplay(){
 	gpioWrite(ControlSegment.g.pin,ControlSegment.g.value);
 	gpioWrite(ControlSegment.DP.pin,ControlSegment.DP.value);
 }
-void escribirLeds(uint8_t position){
+/*void escribirLeds(uint8_t position){
 	val2Leds(position);
 	gpioWrite(ControlLed.led0.pin,ControlLed.led0.value);
 	gpioWrite(ControlLed.led1.pin,ControlLed.led1.value);
-}
+}*/
 
 static void place2Selection(uint8_t place){
 	if(place == 0){
@@ -273,7 +275,7 @@ static void place2Selection(uint8_t place){
 }
 
 
-static void val2Leds(unsigned int place){
+/*static void val2Leds(unsigned int place){
 	if(place == 0){
 		//apagado
 		ControlLed.led0.value = 0;
@@ -291,7 +293,7 @@ static void val2Leds(unsigned int place){
 		ControlLed.led0.value = 0;
 		ControlLed.led1.value = 1;
 	}
-}
+}*/
 //LOOKUP TABLE
 
 

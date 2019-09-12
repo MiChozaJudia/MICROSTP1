@@ -3,6 +3,8 @@
 #include "door.h"
 #include "gpio.h"
 #include "timer.h"
+#include "board.h"
+
 
 typedef enum
 {
@@ -10,37 +12,60 @@ typedef enum
 	CLOSED
 }doorState_t;
 
-static doorState_t doorState;
-static uint8_t myPin;
+static bool doorJustClosed;
 
-void initDoor(uint8_t pin)
+static doorState_t doorState;
+//static uint8_t myPin;
+
+void initDoor()
 {
-	myPin=pin;
-	gpioMode(myPin,OUTPUT);
-	gpioWrite(myPin,false);
+	gpioMode(PIN_STAT0,OUTPUT);
+	//ControlLed.led0.pin = PIN_STAT0;
+	gpioMode(PIN_STAT1,OUTPUT);
+	//ControlLed.led1.pin = PIN_STAT1;
+	//gpioMode(myPin,OUTPUT);
+	gpioWrite(PIN_STAT0,false);
+	gpioWrite(PIN_STAT1,false);
 	doorState=CLOSED;
+	doorJustClosed=false;
 };
 
 
 void openDoor(int time)
 {
 	doorState=OPEN;
-	gpioWrite(myPin,true);
-	timerStart(timerGetId(), TIMER_MS2TICKS(time), TIM_MODE_SINGLESHOT, closeDoor );
+
+	//gpioWrite(myPin,true);
+	gpioWrite(PIN_STAT0,true);
+	timerStart(timerGetId(), TIMER_MS2TICKS(time), TIM_MODE_SINGLESHOT, &closeDoor );
 };
 
 void openDoor5sec(void)
 {
-	openDoor(5000);
+	openDoor(16000);
 };
 
 void closeDoor(void)
 {
 	doorState=CLOSED;
-	gpioWrite(myPin, false);
+	//gpioWrite(myPin, false);
+	gpioWrite(PIN_STAT0,false);
+	doorJustClosed=true;
 };
 
 bool isDoorOpen(void)
 {
 	return (doorState==OPEN);
 };
+
+bool isDoorJustClosed()
+{
+	bool retVal;
+	if(doorJustClosed==false) retVal=false;
+	else
+	{
+		retVal=true;
+		doorJustClosed=false;
+	}
+	return retVal;
+}

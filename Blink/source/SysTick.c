@@ -9,15 +9,22 @@
 #include "SysTick.h"
 #include "hardware.h"
 #include "MK64F12.h"
+#include "board.h"
+#include "gpio.h"
 
 
 //static variables for the file
 static SysTick_Type * systemTimer = SysTick;
 static SysTickFun_t SysTickFunction;
+//static uint8_t outPutInterrupt=-1;
 
 
 //functions
 bool SysTick_Init (SysTickFun_t SysFunction){
+	//if(outPutInterrupt == -1){
+//		outPutInterrupt = PIN_SYS;
+	//	gpioMode(outPutInterrupt,OUTPUT);
+	//}
 
 	systemTimer->CTRL = 0x00; //lo declaro
 	//timer es downcounter
@@ -32,5 +39,7 @@ bool SysTick_Init (SysTickFun_t SysFunction){
 }
 
 __ISR__ SysTick_Handler (void){
+	gpioWrite(PIN_SYS, 1);
 	SysTickFunction();
+	gpioWrite(PIN_SYS, 0);
 }

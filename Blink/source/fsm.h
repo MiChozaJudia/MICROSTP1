@@ -9,7 +9,6 @@
 #ifndef FSM_H_
 #define FSM_H_
 
-#define FIN_TABLA 0x20
 #include <stdbool.h>
 #include "database.h"
 
@@ -20,7 +19,7 @@
 
 
 //LISTA DE EVENTOS CONTEMPLADOS POR LA FSM
-typedef enum {NO_EVENT, BUTTON_PRESS,LONG_BUTTON_PRESS,LONGER_BUTTON_PRESS, ENCODER_RIGHT, ENCODER_LEFT, CARD_PASS,VALID,NOT_VALID} EVENTO;
+typedef enum {NO_EVENT, BUTTON_PRESS,LONG_BUTTON_PRESS,LONGER_BUTTON_PRESS, ENCODER_RIGHT, ENCODER_LEFT, CARD_PASS,DOOR_CLOSED,VALID,NOT_VALID,FIN_TABLA} EVENTO;
 
 typedef struct tabla_estado STATE;
 
@@ -35,6 +34,8 @@ typedef struct userdata
 	bool validation;
 	//True si el ID/PIN ingresado es correcto, false de lo contrario
 	bool validData;
+	//True si estoy esperando una tarjeta
+	bool waitingCard;
 	//Número entero que representa que posición del ID/PIN se esta modificando actualmente. Su valor va de [0,ID/PIN_LEN-1]
 	unsigned int curr_number;
 	//Cantidad de ingresos fallidos en la sesión actual

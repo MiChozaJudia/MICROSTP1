@@ -18,7 +18,7 @@
  * CONSTANT AND MACRO DEFINITIONS USING #DEFINE
  ******************************************************************************/
 
-#define SYSTICK_ISR_FREQUENCY_HZ 1000U
+#define SYSTICK_ISR_FREQUENCY_HZ 30000U
 
 
 /*******************************************************************************

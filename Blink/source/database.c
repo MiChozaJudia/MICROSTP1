@@ -2,7 +2,7 @@
 
 void init_database(data_base * database)
 {
-	char ID0[8]="12345678";
+	char ID0[8]="45176601";
 	char PIN0[5]="11111";
 	for(int i=0;i<ALLOWED;i++)
 	{

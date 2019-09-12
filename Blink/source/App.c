@@ -54,13 +54,17 @@ void get_events(circ_bbuf_t * buff, user_data * data)
 
 	if(buffer_is_full(buff)==0)//Si la cola de eventos no esta llena me fijo si puedo agregar el evento
 	{
-		if (get_ID(data->ID,ID_LENGTH))//Leo la tarjeta y guardo el ID leido
+		if(data->waitingCard)
 		{
-			push_buffer(buff,CARD_PASS);//pusheo el evento a la cola de eventos
-			event_ocurred=true;
+			if (get_ID(data->ID,ID_LENGTH))//Leo la tarjeta y guardo el ID leido
+			{
+				push_buffer(buff,CARD_PASS);//pusheo el evento a la cola de eventos
+				event_ocurred=true;
+				data->waitingCard = false;
+			}
 		}
-	}
 
+	}
 	if(buffer_is_full(buff)==0)//Si la cola de eventos no esta llena me fijo si puedo agregar el evento
 	{
 		if(encoder_state ==SIMPLECLICK)//si el evento fue un click corto del encoder
@@ -68,24 +72,32 @@ void get_events(circ_bbuf_t * buff, user_data * data)
 			push_buffer(buff,BUTTON_PRESS);//pusheo el evento
 			event_ocurred=true;
 		}
-		else if(encoder_state ==LONGCLICK)//si el evento fue un click largo del encoder
+		if(encoder_state ==LONGCLICK)//si el evento fue un click largo del encoder
 		{
 			push_buffer(buff,LONG_BUTTON_PRESS);//pusheo el evento
 			event_ocurred=true;
 		}
-		else if(encoder_state ==PUSHANDROTATE)//si el eventof ue un click y rotacion del encoder
+		if(encoder_state ==VERYLONGCLICK)//si el eventof ue un click y rotacion del encoder
 		{
 			push_buffer(buff,LONGER_BUTTON_PRESS);//pusheo el evento
 			event_ocurred=true;
 		}
-		else if(encoder_state ==ROTLEFT)//si el evento fue una rotación a la izquierda del encoder
+		if(encoder_state ==ROTLEFT)//si el evento fue una rotación a la izquierda del encoder
 		{
 			push_buffer(buff,ENCODER_LEFT);//pusheo el evento
 			event_ocurred=true;
 		}
-		else if(encoder_state ==ROTRIGHT)//si el evento fue una rotación a la derecha del encoder
+		if(encoder_state ==ROTRIGHT)//si el evento fue una rotación a la derecha del encoder
 		{
 			push_buffer(buff,ENCODER_RIGHT);//pusheo el evento
+			event_ocurred=true;
+		}
+	}
+	if(buffer_is_full(buff)==0)//Si la cola de eventos no esta llena me fijo si puedo agregar el evento
+	{
+		if(isDoorJustClosed())
+		{
+			push_buffer(buff,DOOR_CLOSED);//pusheo el evento
 			event_ocurred=true;
 		}
 	}
@@ -97,6 +109,7 @@ void get_events(circ_bbuf_t * buff, user_data * data)
 			if (validity) push_buffer(buff,VALID);//pusheo evento de dato vá	lido
 			else push_buffer(buff,NOT_VALID);//pusheo evento de dato no válido
 			event_ocurred=true;
+			//data->validation=false;
 		}
 	}
 
@@ -114,6 +127,7 @@ void init_userdata(user_data* data)
 	 data->luminosity=DEFAULT_LUMINANCE;//Se arranca con la luminosidad máxima por default.
 	 data->validation = false;
 	 data->validData = false;
+	 data->waitingCard = false;
 	 data->isID=true;//Como primero se va a ingresar el ID su valor default es true
 	 data->curr_number=0;
 	 data->curr_tries = 0;

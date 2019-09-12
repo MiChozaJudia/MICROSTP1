@@ -6,10 +6,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-void initDoor(uint8_t pin);
+void initDoor();
 void openDoor5sec(void);
 void openDoor(int time); //EN MS
 bool isDoorOpen(void);
 void closeDoor(void);
+bool isDoorJustClosed(void);
 
 #endif /* DOOR_H_ */

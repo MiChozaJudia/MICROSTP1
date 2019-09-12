@@ -68,7 +68,7 @@ void initEncoder (void){
 	internalTimer = 0;
 	timerInit();
 	tim_id_t timerID = timerGetId();
-	timerStart(timerID, 1000, TIM_MODE_PERIODIC, &encoderFSM);
+	timerStart(timerID, 33, TIM_MODE_PERIODIC, &encoderFSM);
 	//porque en este encoder son activo bajo los pines
 	edgeDetector.pastButton=TRUE;
 	edgeDetector.pastLeft=TRUE;
@@ -89,7 +89,10 @@ void encoderFSM (void) {
 	case STARTROTRIGHT:
 	{
 		//si me llega un flanco negativo izquierda (defasaje) asumo q se giro efectivamente
-		if(newEvent == NEGEDGEROTLEFT) nextState = ROTRIGHT;
+		if(newEvent == NEGEDGEROTLEFT)
+			{
+			nextState = ROTRIGHT;
+			}
 		//si me llega un flanco positivo a la derecha antes q el negativo a la izquierda
 		//fue un movimiento en falso
 		if(newEvent == POSEDGEROTRIGHT) nextState = IDLE;
@@ -97,7 +100,10 @@ void encoderFSM (void) {
 	case STARTROTLEFT:
 	{
 		//si me llega un flanco negativo derecha (defasaje) asumo q se giro efectivamente
-		if(newEvent == NEGEDGEROTRIGHT) nextState = ROTLEFT;
+		if(newEvent == NEGEDGEROTRIGHT)
+			{
+			nextState = ROTLEFT;
+			}
 		//si me llega un flanco positivo a la izquierda antes q el negativo a la derecha
 		//fue un movimiento en falso
 		if(newEvent == POSEDGEROTRIGHT) nextState = IDLE;
@@ -115,7 +121,14 @@ void encoderFSM (void) {
 	case CLICK:
 	{
 		internalTimer++;
-		if(internalTimer > TIMEISLONG){
+		if(internalTimer > TIMEISTOOLONG){
+			if (POSEDGEBUTTON == newEvent){
+				nextState = VERYLONGCLICK;
+				internalTimer=0;
+			}
+
+		}
+		else if(internalTimer > TIMEISLONG){
 			if (POSEDGEBUTTON == newEvent){
 				nextState = LONGCLICK;
 				internalTimer=0;
@@ -127,10 +140,6 @@ void encoderFSM (void) {
 				nextState = SIMPLECLICK;
 				internalTimer=0;
 			}
-			if( (POSEDGEROTLEFT==newEvent) | (POSEDGEROTRIGHT == newEvent) ){
-				nextState = PUSHANDROTATE;
-				internalTimer =0;
-			}
 		}
 	} break;
 	case LONGCLICK:
@@ -141,7 +150,7 @@ void encoderFSM (void) {
 	{
 		nextState = IDLE;
 	} break;
-	case PUSHANDROTATE:
+	case VERYLONGCLICK:
 	{
 		nextState = IDLE;
 	} break;
@@ -183,7 +192,7 @@ edge_t detectEdge (bool *current, bool *past, pin_t pin) {
 encoderStates getFSM_ev(void)
 {
 	encoderStates state= nextState;
-	if((state==SIMPLECLICK) || (state==ROTRIGHT) || (state==ROTLEFT) || (state==LONGCLICK) || (state==PUSHANDROTATE))
+	if((state==SIMPLECLICK) || (state==ROTRIGHT) || (state==ROTLEFT) || (state==LONGCLICK) || (state==VERYLONGCLICK))
 	{
 		nextState=IDLE;
 	}
