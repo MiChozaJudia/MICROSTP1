@@ -10,6 +10,11 @@ static SIM_Type *  sim=SIM;
 
 static pinIrqFun_t	irq_pointers[5][32];
 
+
+/**
+ * @brief handler of pin interrupts, identifies pin, execute its callback and clean the corresponding flag
+ * @param port Port where the interrupt comes
+ */
 void portIRQ_handler(uint8_t port);
 /**
  * @brief Configures the specified pin to behave either as an input or an output

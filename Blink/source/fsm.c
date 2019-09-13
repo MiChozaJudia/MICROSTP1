@@ -1,7 +1,5 @@
 #include "fsm.h"
 
-
-
 STATE* fsm(STATE *curr_state, EVENTO curr_event, user_data * data)
 {
 	while (curr_state->event != curr_event//Recorro las tablas de estado hasta encontrar el evento deseado

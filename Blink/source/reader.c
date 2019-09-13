@@ -1,5 +1,6 @@
 #include "reader.h"
 #include "board.h"
+#include "gpio.h"
 
 #define ENDSENTINEL 0b11111
 #define STARTSENTINEL 0b01011
@@ -9,8 +10,8 @@
 #define TRACK2_LEN 400
 #define DATA_BIT_SIZE 5
 
-//PRIVATE FUNCTION
-//static char ID[ID_LEN];
+//PRIVATE VARIABLES
+
 static char TRACK2[TRACK2_LEN];
 static uint8_t bitCounter=0;
 static uint8_t bitData=0;
@@ -24,16 +25,46 @@ static bool end=false;
 
 static bool enable=false;
 
-//PRIVATE FUNCTION
-static void set_enable(void);
-static void clean_enable(void);
-static void get_data(void);
-static void toggle_enable(void);
-//static char get_lrc(void);
+//PRIVATE WRAPPER FUNCTIONS
+
+/**
+ * @brief Return 1 if the lrc is correct
+ */
 static bool check_lrc(void);
+/**
+ * @brief Calculates parity and return the char with the parity added
+ * @param data char to calculate parity
+ */
 static char set_parity(char data);
+/**
+ * @brief Set paramater to start a new reading
+ */
 static void reset_reading(void);
+/**
+ * @brief Return a char without the parity
+ * @param data char to clear parity
+ */
 static char clear_parity(char data);
+
+
+//PRIVATE DRIVER FUNCTIONS
+/**
+ * @brief Set enable on true
+ */
+static void set_enable(void);
+/**
+ * @brief Set enable on false
+ */
+static void clean_enable(void);
+/**
+ * @brief Get data from the card and save it in an array of 5 bits-chars
+ */
+static void get_data(void);
+/**
+ * @brief Change current state of the enable flag
+ */
+static void toggle_enable(void);
+
 
 
 bool init_reader()
@@ -44,21 +75,20 @@ bool init_reader()
 	gpioWrite(PIN_TEST,true);
 	//END TEST
 	myClockPin=PIN2NUM(PIN_CLOCK);
-	//myClockPin=clock_pin;
 	myEnablePin=PIN2NUM(PIN_ENABLE);
-	//myEnablePin=enable_pin;
 	myDataPin=PIN2NUM(PIN_DATA);
-	//myDataPin=data_pin;
 	myPort=PIN2PORT(PIN_ENABLE);
-	//myPort=port;
+
 	pinIrqFun_t enableFun=toggle_enable;
 	pinIrqFun_t clockFun=get_data;
+
 	gpioMode(PORTNUM2PIN(myPort,myEnablePin),INPUT);
 	gpioMode(PORTNUM2PIN(myPort,myClockPin),INPUT);
 	gpioMode(PORTNUM2PIN(myPort,myDataPin),INPUT);
 
 	gpioIRQ (PORTNUM2PIN(myPort,myEnablePin), GPIO_IRQ_MODE_BOTH_EDGES, enableFun);
 	gpioIRQ (PORTNUM2PIN(myPort,myClockPin), GPIO_IRQ_MODE_FALLING_EDGE, clockFun);
+
 	return 1;
 }
 
@@ -94,7 +124,7 @@ void get_data(void)
 	bitCounter++;
 	if((dataCounter==0)&&(bitCounter==DATA_BIT_SIZE))
 	{
-		if(bitData==STARTSENTINEL)
+		if(bitData==STARTSENTINEL) //WAITING FOR START SENTINEL
 		{
 			TRACK2[dataCounter]=bitData;
 			bitData=0;
@@ -109,13 +139,13 @@ void get_data(void)
 	}
 	else if((bitCounter==DATA_BIT_SIZE)&&(dataCounter!=0))
 	{
-		if(bitData==ENDSENTINEL)end=true;
+		if(bitData==ENDSENTINEL)end=true; //ENDSENTINEL DETECTED
 
 		TRACK2[dataCounter]=bitData;
 		bitData=0;
 		bitCounter=0;
 
-		if(!(dataCounter==TRACK2_LEN))dataCounter++;
+		if(!(dataCounter==TRACK2_LEN))dataCounter++; //PROTECTION FROM OVERFLOW
 
 
 	}

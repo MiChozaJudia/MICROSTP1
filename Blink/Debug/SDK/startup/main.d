@@ -5,9 +5,8 @@ SDK/startup/main.o SDK/startup/main.d: ../SDK/startup/main.c \
  ../SDK/CMSIS/cmsis_gcc.h ../SDK/CMSIS/system_MK64F12.h \
  ../SDK/CMSIS/MK64F12_features.h ../SDK/CMSIS/core_cm4.h ../source/App.h \
  ../source/buffer.h ../source/fsm.h ../source/database.h \
- ../source/fsmtable.h ../source/reader.h ../source/gpio.h \
- ../SDK/startup/hardware.h ../source/encoder.h ../source/displayWrapper.h \
- ../source/display.h ../source/timer.h ../source/door.h
+ ../source/fsmtable.h ../source/reader.h ../source/encoder.h \
+ ../source/displayWrapper.h ../source/display.h ../source/door.h
 
 ../SDK/startup/hardware.h:
 
@@ -41,16 +40,10 @@ SDK/startup/main.o SDK/startup/main.d: ../SDK/startup/main.c \
 
 ../source/reader.h:
 
-../source/gpio.h:
-
-../SDK/startup/hardware.h:
-
 ../source/encoder.h:
 
 ../source/displayWrapper.h:
 
 ../source/display.h:
-
-../source/timer.h:
 
 ../source/door.h:

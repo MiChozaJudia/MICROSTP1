@@ -13,34 +13,79 @@ extern STATE displayID_state[];
 extern STATE waitPIN_state[];
 extern STATE PINValidation_state[];
 extern STATE enter_state[];
+extern STATE show_add_state[];
+extern STATE wait_ID_2add[];
+extern STATE is_ID_addable[];
+extern STATE wait_PIN_2add[];
+extern STATE is_PIN_addable[];
+
+extern STATE show_ban_state[];
+extern STATE wait_ID_2ban[];
+extern STATE is_bannable_state[];
 
 /*rutinas de acción*/
 
+//
 static void do_nothing(user_data* data);
 
+//Función que setea el display para el estado de setear brillo
 static void setLumin(user_data* data);
+//Función que incrementa el brillo del display
 static void increase_luminosity(user_data* data);
+//Función que decrementa el brillo del display
 static void decrease_luminosity(user_data* data);
 
+//Función que setea el display para el estado de esperar una lectura de tarjeta
 static void set_waitCard(user_data* data);
 
+//Función que setea el display para el estado de esperar el ingreso de un ID
 static void set_waitID(user_data* data);
+//Función que setea al display para mostrar el ID presente en forma de marquesina
 static void displayID(user_data* data);
+//Función que chequea si el ID ingresado es valido
 static void check_ID(user_data* data);
+//Función llamada cuando el ID ingresado no es valido
 static void set_IDretry(user_data* data);
 
+///Función que chequea si el PIN ingresado es valido
 static void check_PIN(user_data* data);
+//Función que setea el display para el estado de esperar el ingreso de un PIN
 static void set_waitPIN(user_data* data);
+//Función llamada cuando el PIN ingresado no es valido
 static void set_PINretry(user_data* data);
 
+//Función que incrementa unitariamente el número marcado por el cursor
 static void increase_num(user_data* data);
+//Función que permite acceder al número a la izquierda del seleccionado en presente por el cursor
 static void switch_left(user_data* data);
+//Función que permite acceder al número a la derecha del seleccionado en presente por el cursor
 static void switch_right(user_data* data);
 
+//Función llamada cuando se desea cancelar la acción y volver al estado BOCA de la FSM
 static void cancel(user_data* data);
+//Función llamada que reseta todos los valores de la FSM
 static void reset_FSM(user_data* data);
 
+//Función que hace que la puerta se abra por 5 segundos
 static void open_door(user_data* data);
+
+//Funciòn que habilita al display para el estado ADD_ADMIN
+static void show_add(user_data* data);
+////Funciòn que habilita al display mostrar el PIN para agregar
+static void set_PINadd(user_data* data);
+//Funcion que agrega el ID con su PIN asociado a la base de datos
+static void add_ID(user_data* data);
+//Función que chequea si el ID que se desea agregar es valido
+static void check_addID(user_data* data);
+//Función que chequea si el PIN que se desea agregar es valido
+static void check_addPIN(user_data* data);
+
+//Funciòn que habilita al display para el estado BAN_ID
+static void show_ban(user_data* data);
+//Funciòn que habilita al display mostrar el ID para bannear
+static void set_IDban(user_data* data);
+//Funcion que bannea el ID ingresado
+static void banID(user_data* data);
 
 /*** tablas de estado ***/
 
@@ -124,6 +169,7 @@ STATE idValidation_state[] =
 	{FIN_TABLA,boca_state,reset_FSM}
 };
 
+///displayID_state
 STATE displayID_state[] =
 {
 	{BUTTON_PRESS,waitPIN_state,set_waitPIN},
@@ -177,8 +223,8 @@ STATE enter_state[] =
 	{BUTTON_PRESS,enter_state,do_nothing},
 	{LONG_BUTTON_PRESS,enter_state,do_nothing},
 	{LONGER_BUTTON_PRESS,enter_state,do_nothing},
-	{ENCODER_LEFT,enter_state,do_nothing},
-	{ENCODER_RIGHT,enter_state,do_nothing},
+	{ENCODER_LEFT,show_ban_state,show_ban},
+	{ENCODER_RIGHT,show_add_state,show_add},
 	{CARD_PASS,enter_state,do_nothing},
 	{DOOR_CLOSED,boca_state,cancel},
 	{VALID,enter_state,do_nothing},
@@ -186,6 +232,139 @@ STATE enter_state[] =
 	{NO_EVENT,enter_state,do_nothing},
 	{FIN_TABLA,enter_state,reset_FSM}//CAMBIAR ESTO, ESTA COMO DEBUG AHORA
 };
+
+///show_add_state
+STATE show_add_state[] =
+{
+	{BUTTON_PRESS,wait_ID_2add,set_IDban},
+	{LONG_BUTTON_PRESS,wait_ID_2add,set_IDban},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
+	{ENCODER_LEFT,show_add_state,do_nothing},
+	{ENCODER_RIGHT,show_add_state,do_nothing},
+	{CARD_PASS,show_add_state,do_nothing},
+	{DOOR_CLOSED,show_add_state,do_nothing},
+	{VALID,show_add_state,do_nothing},
+	{NOT_VALID,show_add_state,do_nothing},
+	{NO_EVENT,show_add_state,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+
+///wait_ID_2add
+STATE wait_ID_2add[] =
+{
+	{BUTTON_PRESS,wait_ID_2add,increase_num},
+	{LONG_BUTTON_PRESS,is_ID_addable,check_addID},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
+	{ENCODER_LEFT,wait_ID_2add,switch_left},
+	{ENCODER_RIGHT,wait_ID_2add,switch_right},
+	{CARD_PASS,wait_ID_2add,do_nothing},
+	{DOOR_CLOSED,wait_ID_2add,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
+	{NO_EVENT,wait_ID_2add,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+///is_ID_addable
+STATE is_ID_addable[] =
+{
+	{BUTTON_PRESS,is_ID_addable,do_nothing},
+	{LONG_BUTTON_PRESS,is_ID_addable,do_nothing},
+	{LONGER_BUTTON_PRESS,is_ID_addable,do_nothing},
+	{ENCODER_LEFT,is_ID_addable,do_nothing},
+	{ENCODER_RIGHT,is_ID_addable,do_nothing},
+	{CARD_PASS,is_ID_addable,do_nothing},
+	{DOOR_CLOSED,is_ID_addable,do_nothing},
+	{VALID,wait_PIN_2add,set_PINadd},
+	{NOT_VALID,boca_state,cancel},
+	{NO_EVENT,is_ID_addable,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+///wait_PIN_2add
+STATE wait_PIN_2add[] =
+{
+	{BUTTON_PRESS,wait_PIN_2add,increase_num},
+	{LONG_BUTTON_PRESS,is_PIN_addable,check_addPIN},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
+	{ENCODER_LEFT,wait_PIN_2add,switch_left},
+	{ENCODER_RIGHT,wait_PIN_2add,switch_right},
+	{CARD_PASS,wait_PIN_2add,do_nothing},
+	{DOOR_CLOSED,wait_PIN_2add,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
+	{NO_EVENT,wait_PIN_2add,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+///is_PIN_addable
+STATE is_PIN_addable[] =
+{
+	{BUTTON_PRESS,is_PIN_addable,do_nothing},
+	{LONG_BUTTON_PRESS,is_PIN_addable,do_nothing},
+	{LONGER_BUTTON_PRESS,is_PIN_addable,do_nothing},
+	{ENCODER_LEFT,is_PIN_addable,do_nothing},
+	{ENCODER_RIGHT,is_PIN_addable,do_nothing},
+	{CARD_PASS,is_PIN_addable,do_nothing},
+	{DOOR_CLOSED,is_PIN_addable,do_nothing},
+	{VALID,boca_state,add_ID},
+	{NOT_VALID,boca_state,cancel},
+	{NO_EVENT,is_PIN_addable,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+///show_ban_state
+STATE show_ban_state[] =
+{
+	{BUTTON_PRESS,wait_ID_2ban,set_IDban},
+	{LONG_BUTTON_PRESS,wait_ID_2ban,set_IDban},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
+	{ENCODER_LEFT,show_ban_state,do_nothing},
+	{ENCODER_RIGHT,show_ban_state,do_nothing},
+	{CARD_PASS,show_ban_state,do_nothing},
+	{DOOR_CLOSED,show_ban_state,do_nothing},
+	{VALID,show_ban_state,do_nothing},
+	{NOT_VALID,show_ban_state,do_nothing},
+	{NO_EVENT,show_ban_state,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+
+
+///wait_ID_2ban
+STATE wait_ID_2ban[] =
+{
+	{BUTTON_PRESS,wait_ID_2ban,increase_num},
+	{LONG_BUTTON_PRESS,is_bannable_state,check_ID},
+	{LONGER_BUTTON_PRESS,boca_state,cancel},
+	{ENCODER_LEFT,wait_ID_2ban,switch_left},
+	{ENCODER_RIGHT,wait_ID_2ban,switch_right},
+	{CARD_PASS,wait_ID_2ban,do_nothing},
+	{DOOR_CLOSED,wait_ID_2ban,do_nothing},
+	{VALID,boca_state,do_nothing},
+	{NOT_VALID,boca_state,do_nothing},
+	{NO_EVENT,wait_ID_2ban,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+//is_bannable_state
+STATE is_bannable_state[] =
+{
+	{BUTTON_PRESS,is_bannable_state,do_nothing},
+	{LONG_BUTTON_PRESS,is_bannable_state,do_nothing},
+	{LONGER_BUTTON_PRESS,is_bannable_state,do_nothing},
+	{ENCODER_LEFT,is_bannable_state,do_nothing},
+	{ENCODER_RIGHT,is_bannable_state,do_nothing},
+	{CARD_PASS,is_bannable_state,do_nothing},
+	{DOOR_CLOSED,is_bannable_state,do_nothing},
+	{VALID,boca_state,banID},
+	{NOT_VALID,boca_state,cancel},
+	{NO_EVENT,is_bannable_state,do_nothing},
+	{FIN_TABLA,boca_state,reset_FSM}
+};
+
+
 
 ///========interfaz=================
 STATE *FSM_GetInitState(user_data* data)
@@ -195,7 +374,7 @@ STATE *FSM_GetInitState(user_data* data)
 	init_display();
 	initDoor();
 	displayMode_t mode=BOCA;
-	updateDisplay(mode,data->ID,0);//IMPRIMO BOCA
+	updateDisplay(mode,data->ID,5);//IMPRIMO BOCA
 	return (boca_state);
 }
 
@@ -264,13 +443,12 @@ void set_IDretry(user_data* data)
 	data->validation = false;
 	for (int i = 0; i < ID_LENGTH; i++)
 	{
-		data->ID[i] = '0';
+		data->ID[i] = 'n';
 	}
 	displayMode_t mode=ID;
 	updateDisplay(mode,data->ID,data->curr_number);
 }
 
-///PREPARO PARA ESPERAR UN PIN
 void set_waitPIN(user_data* data)
 {
 	data->validData = false;
@@ -296,7 +474,7 @@ void set_PINretry(user_data* data)
 	data->validation = false;
 	for (int i = 0; i < PIN_LENGTH; i++)
 	{
-		data->PIN[i] = '0';
+		data->PIN[i] = 'n';
 	}
 	displayMode_t mode=PIN;
 	updateDisplay(mode,data->PIN,data->curr_number);
@@ -307,7 +485,9 @@ void increase_num(user_data* data)
 {
 	if (data->isID)
 	{
-		if (data->ID[data->curr_number] == '9')
+		if(data->ID[data->curr_number]== 'n')
+			data->ID[data->curr_number] = '0';
+		else if (data->ID[data->curr_number] == '9')
 			data->ID[data->curr_number] = '0';
 		else data->ID[data->curr_number]++;
 		displayMode_t mode=ID;
@@ -315,7 +495,9 @@ void increase_num(user_data* data)
 	}
 	else
 	{
-		if (data->PIN[data->curr_number] == '9')
+		if (data->PIN[data->curr_number] == 'n')
+			data->PIN[data->curr_number] = '0';
+		else if (data->PIN[data->curr_number] == '9')
 			data->PIN[data->curr_number] = '0';
 		else data->PIN[data->curr_number]++;
 		displayMode_t mode=PIN;
@@ -365,7 +547,7 @@ void open_door(user_data* data)
 	data->validation=false;
 	displayMode_t mode=DOOR;
 	//leds(2);
-	 openDoor5sec();
+	openDoor5sec();
 	updateDisplay(mode,data->ID,0);//
 
 	/*if (!isDoorOpen())
@@ -384,14 +566,114 @@ void cancel(user_data* data)
 	data->waitingCard = false;
 	for (int i = 0; i < ID_LENGTH; i++)
 	{
-		data->ID[i] = '0';
+		data->ID[i] = 'n';
 	}
 	for (int i = 0; i < PIN_LENGTH; i++)
 	{
-		data->PIN[i] = '0';
+		data->PIN[i] = 'n';
 	}
 	displayMode_t mode=BOCA;
-	updateDisplay(mode,data->ID,0);//IMPRIMO BOCA
+	updateDisplay(mode,data->ID,5);//IMPRIMO BOCA
+}
+
+///
+void show_ban(user_data* data)
+{
+	displayMode_t mode=BAN;
+	updateDisplay(mode,data->PIN,data->curr_number);
+}
+
+///
+void banID(user_data* data)
+{
+	bool banned;
+	banned = ban(&data->database,data->ID,ID_LENGTH,PIN_LENGTH);
+	data->isID = true;
+	data->curr_number = 0;
+	data->validData = false;
+	data->validation = false;
+	data->waitingCard = false;
+	for (int i = 0; i < ID_LENGTH; i++)
+	{
+		data->ID[i] = 'n';
+	}
+	for (int i = 0; i < PIN_LENGTH; i++)
+	{
+		data->PIN[i] = 'n';
+	}
+	displayMode_t mode=BOCA;
+	updateDisplay(mode,data->ID,5);//IMPRIMO BOCA
+}
+
+///
+void set_IDban(user_data* data)
+{
+	data->curr_number=0;
+	data->isID=true;
+	for(int i=0;i<ID_LENGTH;i++)
+	{
+		data->ID[i]='n';
+	}
+	displayMode_t mode = ID;
+	updateDisplay(mode,data->ID,data->curr_number);
+}
+
+void set_PINadd(user_data* data)
+{
+	data->validData = false;
+	data->validation = false;
+	data->curr_number = 0;
+	data->isID=false;
+	for(int i=0;i<PIN_LENGTH;i++)
+		{
+			data->PIN[i]='n';
+		}
+	displayMode_t mode=PIN;
+	updateDisplay(mode,data->PIN,data->curr_number);
+}
+
+///
+void show_add(user_data* data)
+{
+	displayMode_t mode=ADD;
+	updateDisplay(mode,data->PIN,data->curr_number);
+}
+
+///
+void add_ID(user_data* data)
+{
+	bool added;
+	added = add_to_whitelist(&data->database,data->ID, ID_LENGTH,data->PIN, PIN_LENGTH);
+	data->isID = true;
+	data->curr_number = 0;
+	data->validData = false;
+	data->validation = false;
+	data->waitingCard = false;
+	for (int i = 0; i < ID_LENGTH; i++)
+	{
+		data->ID[i] = 'n';
+	}
+	for (int i = 0; i < PIN_LENGTH; i++)
+	{
+		data->PIN[i] = 'n';
+	}
+	displayMode_t mode=BOCA;
+	updateDisplay(mode,data->ID,5);//IMPRIMO BOCA
+}
+
+///
+void check_addID(user_data* data)
+{
+	data->validation = true;
+	data->validData =can_add_ID(&data->database,data->ID,ID_LENGTH);
+
+}
+
+///
+void check_addPIN(user_data* data)
+{
+	data->validation =true;
+	data->validData=can_add_PIN(&data->database,data->PIN, PIN_LENGTH);
 }
 
 ///
@@ -410,11 +692,11 @@ void reset_FSM(user_data* data)
 	data->curr_number = 0;
 	for (int i = 0; i < ID_LENGTH; i++)
 	{
-		data->ID[i] = '0';
+		data->ID[i] = 'n';
 	}
 	for (int i = 0; i < PIN_LENGTH; i++)
 	{
-		data->PIN[i] = '0';
+		data->PIN[i] = 'n';
 	}
 	displayMode_t mode=BOCA;
 	updateDisplay(mode,data->ID,0);//IMPRIMO BOCA

@@ -109,7 +109,7 @@ void get_events(circ_bbuf_t * buff, user_data * data)
 			if (validity) push_buffer(buff,VALID);//pusheo evento de dato vá	lido
 			else push_buffer(buff,NOT_VALID);//pusheo evento de dato no válido
 			event_ocurred=true;
-			//data->validation=false;
+			data->validation=false;
 		}
 	}
 
@@ -133,11 +133,11 @@ void init_userdata(user_data* data)
 	 data->curr_tries = 0;
 	 for (int i = 0; i < ID_LENGTH; i++)
 	 {
-		 data->ID[i] = '1'+i;
+		 data->ID[i] = 'n';
 	 }
 	 for (int i = 0; i < PIN_LENGTH; i++)
 	 {
-		 data->PIN[i] = '0';
+		 data->PIN[i] = 'n';
 	 }
 	 init_database(&data->database);// inicializo la base de datos
  }

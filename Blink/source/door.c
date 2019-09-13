@@ -13,17 +13,13 @@ typedef enum
 }doorState_t;
 
 static bool doorJustClosed;
-
 static doorState_t doorState;
-//static uint8_t myPin;
+
 
 void initDoor()
 {
 	gpioMode(PIN_STAT0,OUTPUT);
-	//ControlLed.led0.pin = PIN_STAT0;
 	gpioMode(PIN_STAT1,OUTPUT);
-	//ControlLed.led1.pin = PIN_STAT1;
-	//gpioMode(myPin,OUTPUT);
 	gpioWrite(PIN_STAT0,false);
 	gpioWrite(PIN_STAT1,false);
 	doorState=CLOSED;
@@ -35,7 +31,6 @@ void openDoor(int time)
 {
 	doorState=OPEN;
 
-	//gpioWrite(myPin,true);
 	gpioWrite(PIN_STAT0,true);
 	timerStart(timerGetId(), TIMER_MS2TICKS(time), TIM_MODE_SINGLESHOT, &closeDoor );
 };

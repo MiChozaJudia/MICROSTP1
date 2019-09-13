@@ -1,5 +1,7 @@
 #include "display.h"
 #include "board.h"
+#include "gpio.h"
+#include "timer.h"
 
 //------------------------------------VARIABLES GLOBALES------------------------------------
 
@@ -20,11 +22,6 @@ typedef struct DisplayControl {
    PinParameters DP;
 
 } DisplayControlSegment;
-
-/*typedef struct LedsControl{
-	PinParameters led0;
-	PinParameters led1;
-} Leds;*/
 
 typedef struct DisplaySelection{
 	PinParameters sel0;
@@ -80,7 +77,7 @@ static void val2Segments(uint8_t val,uint8_t puntitoBool);
 //-------------------------FUNCIONES---------------------------------------------------------------------------
 void inicializarDisplay(){
 
-//Configuración del modo de los Pines para controlar el display y guardado de los pines para escritura
+//Configuración del modo de los Pines para controlar el display y guardado de los pines para escritura por interrupcion
 	gpioMode(PIN_SEGA,OUTPUT);
 	ControlSegment.a.pin=PIN_SEGA;
 
@@ -111,26 +108,28 @@ void inicializarDisplay(){
 	gpioMode(PIN_SEL1,OUTPUT);
 	Selection.sel1.pin=PIN_SEL1;
 
+	//Brightness por default la seteo en HIGH.
 	setBrightness(BRIGHTNESSHIGH);
-// Coloco todod en BOKEEEE.
+
+	//Coloco todod en '80CA'.
 	ResetDisplay();
-	//inicializar Timer.
+
+	//inicializo Timer.
 	timerInit();
+
+	//Config de interrupción para escribir (multiplexar) en el display
 	tim_id_t timerEscribir = timerGetId();
 	timerStart(timerEscribir,1,TIM_MODE_PERIODIC,&escribir);
+
+	//Config de interrupción para realizar un roll en el display
 	tim_id_t timerRoll = timerGetId();
 	timerStart(timerRoll,3333,TIM_MODE_PERIODIC,&tryRoll);
 
+	//pin utilizado para medir las interrupciones
 	gpioMode(PIN_SYS,OUTPUT);
 
 }
 
-/*void initLeds(){
-	gpioMode(PIN_STAT0,OUTPUT);
-	ControlLed.led0.pin = PIN_STAT0;
-	gpioMode(PIN_STAT1,OUTPUT);
-	ControlLed.led1.pin = PIN_STAT1;
-}*/
 
 void setBrightness(tipo_de_brillo_t value){
 	//toma valores entre 0 y 10
@@ -138,16 +137,13 @@ void setBrightness(tipo_de_brillo_t value){
 }
 
 void ResetDisplay(){
-	msj[0]='8';
-	msj[1]='0';
-	msj[2]='C';
-	msj[3]='A';
 	rollstatus=0;
+	escribirDisplay("80CA",5);
 }
 
 static void escribir(){
 //llamada por systick
-
+	gpioWrite(PIN_SYS, 1);
 	if(Brightness<BrightnessValue){
 		if (MsjLine < 4){
 			place2Selection(MsjLine);
@@ -170,7 +166,7 @@ static void escribir(){
 	}else{
 		writeBlancSpace();
 	}
-
+	gpioWrite(PIN_SYS, 0);
 }
 
 static void writeBlancSpace(){
@@ -251,11 +247,6 @@ static void writeOnDisplay(){
 	gpioWrite(ControlSegment.g.pin,ControlSegment.g.value);
 	gpioWrite(ControlSegment.DP.pin,ControlSegment.DP.value);
 }
-/*void escribirLeds(uint8_t position){
-	val2Leds(position);
-	gpioWrite(ControlLed.led0.pin,ControlLed.led0.value);
-	gpioWrite(ControlLed.led1.pin,ControlLed.led1.value);
-}*/
 
 static void place2Selection(uint8_t place){
 	if(place == 0){
@@ -273,28 +264,6 @@ static void place2Selection(uint8_t place){
 	}else {}
 
 }
-
-
-/*static void val2Leds(unsigned int place){
-	if(place == 0){
-		//apagado
-		ControlLed.led0.value = 0;
-		ControlLed.led1.value = 0;
-	}else if (place == 1){
-		//prendido el primero
-		ControlLed.led0.value = 1;
-		ControlLed.led1.value = 1;
-	}else if (place == 2){
-		//prendido el segundo
-		ControlLed.led0.value = 1;
-		ControlLed.led1.value = 0;
-	}else if (place == 3){
-		//prendido el tercero
-		ControlLed.led0.value = 0;
-		ControlLed.led1.value = 1;
-	}
-}*/
-//LOOKUP TABLE
 
 
 static void val2Segments(uint8_t val,uint8_t puntito){

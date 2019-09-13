@@ -14,6 +14,8 @@
 #include "displayWrapper.h"
 #include "door.h"
 
+
+//Devuelve el estado inicial de la FSM
 STATE *FSM_GetInitState(user_data* data);
 
 #endif /* FSMTABLE_H_ */

@@ -26,12 +26,6 @@ void init_display(void)
 	inicializarDisplay();
 }
 
-void init_leds(void)
-{
-	initLeds();
-}
-
-
 
 void set_brightness(unsigned int valorDel0Al3)
 {
@@ -46,11 +40,6 @@ void set_brightness(unsigned int valorDel0Al3)
 	}
 }
 
-void leds(unsigned int cual){
-	//cual = 0 apaga, 1 prende el primero, 2 el segundo, 3 el tercero,
-	escribirLeds(cual);
-}
-
 void updateDisplay(displayMode_t displayMode, char* data, uint8_t number)
 {
 	if(displayMode==BOCA)
@@ -63,6 +52,16 @@ void updateDisplay(displayMode_t displayMode, char* data, uint8_t number)
 			//escribirDisplay(iddleString,NODISPLAY);
 		escribirDisplay("Lun ",NOPOINT);
 		}
+	else if(displayMode==ADD)
+			{
+				//escribirDisplay(iddleString,NODISPLAY);
+			escribirDisplay("Add ",NOPOINT);
+			}
+	else if(displayMode==BAN)
+			{
+				//escribirDisplay(iddleString,NODISPLAY);
+			escribirDisplay("8An ",NOPOINT);
+			}
 	else if(displayMode == CARD)
 	{
 		escribirDisplay("CArd",NOPOINT);

@@ -39,7 +39,5 @@ bool SysTick_Init (SysTickFun_t SysFunction){
 }
 
 __ISR__ SysTick_Handler (void){
-	gpioWrite(PIN_SYS, 1);
 	SysTickFunction();
-	gpioWrite(PIN_SYS, 0);
 }
